@@ -1,0 +1,89 @@
+$contentCatalog=apparel-ukContentCatalog
+$contentCV=catalogVersion(CatalogVersion.catalog(Catalog.id[default=$contentCatalog]),CatalogVersion.version[default=Staged])[default=$contentCatalog:Staged]
+$siteResource=jar:de.hybris.platform.apparelstore.constants.ApparelstoreConstants&/apparelstore/import/sampledata/contentCatalogs/$contentCatalog
+$productCatalog=apparelProductCatalog
+$productCV=catalogVersion(catalog(id[default=$productCatalog]),version[default='Staged'])[unique=true,default=$productCatalog:Staged]
+$picture=media(code, $contentCV)
+$lang=en
+
+# 1. Create Media Objects for Banners
+INSERT_UPDATE Media;$contentCV[unique=true];code[unique=true];@media[translator=de.hybris.platform.impex.jalo.media.MediaDataTranslator];mime[default='image/jpeg'];folder(qualifier)[default='images'];altText
+;;OffersBanner1.jpg;$siteResource/images/banners/offers/OffersBanner1.jpg;;;"Grab the Offer soon"
+;;OffersBanner2.png;$siteResource/images/banners/offers/OffersBanner2.png;;;"Grab the Offer soon"
+;;OffersBanner3.jpg;$siteResource/images/banners/offers/OffersBanner3.jpg;;;"Grab the Discounted Sale soon"
+
+# 2. Create CMS Components
+# Note: In headless, product links use frontend route paths (/product/<code-or-id>)
+INSERT_UPDATE CMSParagraphComponent;$contentCV[unique=true];uid[unique=true];name;&componentRef;content[lang=$lang]
+;;offerHeadingComponent;Offers Heading information;offerHeadingComponent;"<h2>Special Offers for you</h2>"
+
+INSERT_UPDATE SimpleBannerComponent;$contentCV[unique=true];uid[unique=true];name;&componentRef;urlLink
+;;offer1BannerComponent;Offer1 Banner Component;offer1BannerComponent;/product/300737415
+;;offer2BannerComponent;Offer2 Banner Component;offer2BannerComponent;/product/111114_black
+;;offer3BannerComponent;Offer3 Banner Component;offer3BannerComponent;/product/300604624
+
+UPDATE SimpleBannerComponent;$contentCV[unique=true];uid[unique=true];$picture[lang=$lang]
+;;offer1BannerComponent;OffersBanner1.jpg
+;;offer2BannerComponent;OffersBanner2.png
+;;offer3BannerComponent;OffersBanner3.jpg
+
+# 3. Create Page-Specific Content Slots
+INSERT_UPDATE ContentSlot;$contentCV[unique=true];uid[unique=true];name;active;cmsComponents(uid,$contentCV)
+;;offersParagraphSlot;Offer Paragraph Slot;true;offerHeadingComponent
+;;offersBannerSlot;Offer Banner Slot;true;offer1BannerComponent,offer2BannerComponent,offer3BannerComponent
+
+# 4. Create the ContentPage for OCC
+# CRITICAL CHANGE: label MUST be "/offers" (starting with "/")
+INSERT_UPDATE ContentPage;$contentCV[unique=true];uid[unique=true];name;masterTemplate(uid,$contentCV);label;title[lang=$lang];defaultPage[default='true'];approvalStatus(code)[default='approved'];homepage[default='false']
+;;offersContentPage;Offers Content Page;ContentPage1Template;/offers;"Exclusive Offers"
+
+# 5. Link Content Slots to the Page (Section1 = Heading, Section2A = Banners)
+INSERT_UPDATE ContentSlotForPage;$contentCV[unique=true];uid[unique=true];position[unique=true];page(uid,$contentCV)[unique=true];contentSlot(uid,$contentCV)[unique=true]
+;;Section1-offersPage;Section1;offersContentPage;offersParagraphSlot
+;;Section2A-offersPage;Section2A;offersContentPage;offersBannerSlot
+
+# 6. Navigation Node & CMS Link for Mega Menu
+INSERT_UPDATE CMSLinkComponent;$contentCV[unique=true];uid[unique=true];name;url;target(code)[default='sameWindow'];linkName[lang=$lang]
+;;OffersLink;Offers Link;/offers;;Offers
+
+INSERT_UPDATE CMSNavigationNode;uid[unique=true];$contentCV[unique=true];name;parent(uid, $contentCV);&nodeRef;title[lang=$lang]
+;OfferNavigationNode;;Offers Navigation Node;ApparelUKCategoryNavNode;OfferNavigationNode;Offers
+
+INSERT_UPDATE CMSNavigationEntry;uid[unique=true];$contentCV[unique=true];name;navigationNode(&nodeRef);item(CMSLinkComponent.uid,CMSLinkComponent.$contentCV)
+;OfferNavNodeEntry;;Offer Navigation Node Entry;OfferNavigationNode;OffersLink
+
+
+
+
+
+# 1. Custom Page Template (frontendTemplateName is just a logical name, NOT a JSP path)
+INSERT_UPDATE PageTemplate;$contentCV[unique=true];uid[unique=true];name;frontendTemplateName;restrictedPageTypes(code);active[default=true]
+;;OffersPageTemplate;Offers Page Template;OffersPageTemplate;ContentPage
+
+# 2. Content Slot Names for SmartEdit / OCC
+INSERT_UPDATE ContentSlotName;name[unique=true];template(uid,$contentCV)[unique=true][default='OffersPageTemplate'];compTypeGroup(code)
+;offersParagraph;;wide
+;offersBanner;;wide
+
+# 3. Content Page
+INSERT_UPDATE ContentPage;$contentCV[unique=true];uid[unique=true];name;masterTemplate(uid,$contentCV);label;title[lang=$lang];defaultPage[default='true'];approvalStatus(code)[default='approved']
+;;offersContentPage;Offers Content Page;OffersPageTemplate;/offers;"Exclusive Offers"
+
+# 4. Link Content Slots to the Page
+INSERT_UPDATE ContentSlotForPage;$contentCV[unique=true];uid[unique=true];position[unique=true];page(uid,$contentCV)[unique=true];contentSlot(uid,$contentCV)[unique=true]
+;;offersParagraph-offersPage;offersParagraph;offersContentPage;offersParagraphSlot
+;;offersBanner-offersPage;offersBanner;offersContentPage;offersBannerSlot
+
+
+import { LayoutConfig } from '@spartacus/storefront';
+import { provideConfig } from '@spartacus/core';
+
+provideConfig(<LayoutConfig>{
+  layoutSlots: {
+    OffersPageTemplate: {
+      slots: ['offersParagraph', 'offersBanner']
+    }
+  }
+});
+
+
