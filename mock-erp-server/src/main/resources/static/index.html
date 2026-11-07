@@ -1,0 +1,263 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SAP S/4HANA OData Mock ERP Dashboard</title>
+    <style>
+        :root {
+            --sap-blue: #0a6ed1;
+            --sap-dark: #1d2d3e;
+            --sap-bg: #f5f6f7;
+            --sap-card-bg: #ffffff;
+            --sap-text: #222222;
+            --sap-border: #d9d9d9;
+            --sap-success: #107e3e;
+            --sap-warn: #e9730c;
+            --sap-danger: #b00;
+        }
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Arial, sans-serif;
+            background: var(--sap-bg);
+            color: var(--sap-text);
+            margin: 0;
+            padding: 24px;
+        }
+        .header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            background: var(--sap-dark);
+            color: white;
+            padding: 16px 24px;
+            border-radius: 8px;
+            margin-bottom: 24px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+        .header h1 {
+            margin: 0;
+            font-size: 20px;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+        .badge {
+            background: var(--sap-blue);
+            font-size: 12px;
+            padding: 4px 8px;
+            border-radius: 4px;
+            text-transform: uppercase;
+        }
+        .grid {
+            display: grid;
+            grid-template-columns: 320px 1fr;
+            gap: 24px;
+        }
+        .card {
+            background: var(--sap-card-bg);
+            border-radius: 8px;
+            border: 1px solid var(--sap-border);
+            padding: 20px;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.05);
+        }
+        .card h2 {
+            margin-top: 0;
+            font-size: 16px;
+            border-bottom: 1px solid var(--sap-border);
+            padding-bottom: 10px;
+            color: var(--sap-dark);
+        }
+        .form-group {
+            margin-bottom: 16px;
+        }
+        label {
+            display: block;
+            font-size: 13px;
+            font-weight: 600;
+            margin-bottom: 6px;
+        }
+        select, button {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid var(--sap-border);
+            border-radius: 6px;
+            font-size: 14px;
+        }
+        button.btn-primary {
+            background: var(--sap-blue);
+            color: white;
+            border: none;
+            cursor: pointer;
+            font-weight: 600;
+        }
+        button.btn-primary:hover {
+            opacity: 0.9;
+        }
+        button.btn-danger {
+            background: var(--sap-danger);
+            color: white;
+            border: none;
+            cursor: pointer;
+            margin-top: 8px;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 13px;
+        }
+        th, td {
+            text-align: left;
+            padding: 10px 12px;
+            border-bottom: 1px solid var(--sap-border);
+        }
+        th {
+            background: #f0f2f5;
+            font-weight: 600;
+        }
+        .status-pill {
+            display: inline-block;
+            padding: 2px 8px;
+            border-radius: 12px;
+            font-size: 11px;
+            font-weight: bold;
+        }
+        .status-ok { background: #e8f5e9; color: var(--sap-success); }
+        .status-wait { background: #fff3e0; color: var(--sap-warn); }
+        pre {
+            background: #272822;
+            color: #f8f8f2;
+            padding: 12px;
+            border-radius: 6px;
+            overflow: auto;
+            max-height: 250px;
+            font-size: 12px;
+        }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <h1>
+            <span>SAP S/4HANA OData Mock ERP</span>
+            <span class="badge">API_SALES_ORDER_SRV</span>
+        </h1>
+        <div>Endpoint: <code>http://localhost:8089/sap/opu/odata/sap/API_SALES_ORDER_SRV</code></div>
+    </div>
+
+    <div class="grid">
+        <div class="card">
+            <h2>Scenario & Control</h2>
+            <div class="form-group">
+                <label for="scenarioSelect">Simulation Scenario</label>
+                <select id="scenarioSelect" onchange="updateScenario()">
+                    <option value="SUCCESS">SUCCESS (201 Created)</option>
+                    <option value="LATENCY_5S">LATENCY_5S (5s Delay)</option>
+                    <option value="ERROR_500">ERROR_500 (ERP Crash)</option>
+                    <option value="BUSINESS_REJECT">BUSINESS_REJECT (Credit/Customer Locked 400)</option>
+                    <option value="TRANSIENT_FAIL_THEN_SUCCESS">TRANSIENT_FAIL_THEN_SUCCESS (503 then 200)</option>
+                    <option value="INVALID_PAYLOAD">INVALID_PAYLOAD (422 Unprocessable)</option>
+                </select>
+            </div>
+            <div class="form-group">
+                <label>CSRF Enforcement</label>
+                <select id="csrfSelect" onchange="updateCsrf()">
+                    <option value="true">Enabled (Fetch Handshake Required)</option>
+                    <option value="false">Disabled</option>
+                </select>
+            </div>
+            <button class="btn-primary" onclick="fetchOrders()">Refresh Orders</button>
+            <button class="btn-danger" onclick="resetMock()">Reset All Data</button>
+        </div>
+
+        <div class="card">
+            <h2>Replicated Orders (<span id="orderCount">0</span>)</h2>
+            <table>
+                <thead>
+                    <tr>
+                        <th>SAP Sales Order</th>
+                        <th>Commerce Order (PO)</th>
+                        <th>Attempts</th>
+                        <th>Received At</th>
+                        <th>Total Net</th>
+                        <th>Action</th>
+                    </tr>
+                </thead>
+                <tbody id="ordersTableBody">
+                    <tr><td colspan="6" style="text-align:center; color:#888;">No orders replicated yet. Place an order in Commerce!</td></tr>
+                </tbody>
+            </table>
+
+            <div id="detailsSection" style="display:none; margin-top:20px;">
+                <h3>OData Payload Inspector</h3>
+                <pre id="jsonPayload"></pre>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        let ordersData = [];
+
+        async function fetchHealth() {
+            try {
+                const res = await fetch('/api/mock/health');
+                const data = await res.json();
+                document.getElementById('scenarioSelect').value = data.activeScenario;
+                document.getElementById('csrfSelect').value = data.csrfEnabled.toString();
+            } catch(e) {
+                console.error("Health fetch error", e);
+            }
+        }
+
+        async function fetchOrders() {
+            try {
+                const res = await fetch('/api/mock/orders');
+                ordersData = await res.json();
+                document.getElementById('orderCount').innerText = ordersData.length;
+                const tbody = document.getElementById('ordersTableBody');
+                if (ordersData.length === 0) {
+                    tbody.innerHTML = '<tr><td colspan="6" style="text-align:center; color:#888;">No orders replicated yet.</td></tr>';
+                    document.getElementById('detailsSection').style.display = 'none';
+                    return;
+                }
+                tbody.innerHTML = ordersData.map((ord, idx) => `
+                    <tr>
+                        <td><strong>${ord.salesOrderNumber}</strong></td>
+                        <td>${ord.purchaseOrderByCustomer || '-'}</td>
+                        <td><span class="status-pill status-${ord.attemptCount > 1 ? 'wait' : 'ok'}">${ord.attemptCount}</span></td>
+                        <td>${new Date(ord.receivedAt).toLocaleTimeString()}</td>
+                        <td>${ord.payload.TransactionCurrency || ''} ${ord.payload.TotalNetAmount || '0.00'}</td>
+                        <td><button style="padding:4px 8px; font-size:11px;" onclick="viewPayload(${idx})">View JSON</button></td>
+                    </tr>
+                `).join('');
+            } catch(e) {
+                console.error("Order fetch error", e);
+            }
+        }
+
+        function viewPayload(idx) {
+            document.getElementById('detailsSection').style.display = 'block';
+            document.getElementById('jsonPayload').innerText = JSON.stringify(ordersData[idx], null, 2);
+        }
+
+        async function updateScenario() {
+            const scenario = document.getElementById('scenarioSelect').value;
+            await fetch('/api/mock/scenario?type=' + scenario, { method: 'POST' });
+        }
+
+        async function updateCsrf() {
+            const enabled = document.getElementById('csrfSelect').value;
+            await fetch('/api/mock/csrf?enabled=' + enabled, { method: 'POST' });
+        }
+
+        async function resetMock() {
+            if(confirm("Are you sure you want to clear all replicated orders and state?")) {
+                await fetch('/api/mock/reset', { method: 'POST' });
+                await fetchOrders();
+            }
+        }
+
+        fetchHealth();
+        fetchOrders();
+        setInterval(fetchOrders, 3000);
+    </script>
+</body>
+</html>

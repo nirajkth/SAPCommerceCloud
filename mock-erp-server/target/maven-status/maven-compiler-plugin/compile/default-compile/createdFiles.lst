@@ -1,0 +1,14 @@
+com\erp\mock\dto\SapODataSalesOrderDto.class
+com\erp\mock\controller\MockDashboardController.class
+com\erp\mock\controller\SapODataSalesOrderController$1.class
+com\erp\mock\dto\SapODataResponseWrapper.class
+com\erp\mock\config\MockScenarioConfig.class
+com\erp\mock\model\ErpOrderRecord.class
+com\erp\mock\controller\SapODataSalesOrderController.class
+com\erp\mock\dto\SapODataErrorResponse$ODataErrorDetails.class
+com\erp\mock\dto\SapODataErrorResponse.class
+com\erp\mock\MockErpApplication.class
+com\erp\mock\dto\SapODataErrorResponse$ErrorMessage.class
+com\erp\mock\model\ErpSimulationScenario.class
+com\erp\mock\service\MockErpOrderService.class
+com\erp\mock\dto\SapODataItemDto.class
