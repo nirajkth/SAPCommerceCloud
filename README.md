@@ -156,3 +156,99 @@ UPDATE Trigger; cronjob(code)[unique=true]; active
 ; update-powertoolsIndex-cronJob ; false
 ; update-backofficeIndex-CronJob ; false
 8:36 PM
+
+
+<!-- ERP Lifecycle Status Enum -->
+<enumtype generate="true" code="ErpExportStatus" autocreate="true" dynamic="true">
+    <value code="NOT_EXPORTED"/>
+    <value code="EXPORTED"/>
+    <value code="FAILED"/>
+    <value code="RETRY"/>
+</enumtype>
+
+<!-- Attributes added to Order -->
+<itemtype code="Order" autocreate="false" generate="false">
+    <attributes>
+        <attribute qualifier="erpOrderCode" type="java.lang.String">
+            <description>SAP ERP Sales Document Number (e.g. 0010004501)</description>
+            <persistence type="property"/>
+            <modifiers read="true" write="true" search="true" optional="true"/>
+        </attribute>
+        <attribute qualifier="erpExportStatus" type="ErpExportStatus">
+            <description>Status of ERP Replication</description>
+            <persistence type="property"/>
+            <modifiers read="true" write="true" search="true" optional="true"/>
+        </attribute>
+        <attribute qualifier="erpExportDate" type="java.util.Date">
+            <description>Date and time when replicated to ERP</description>
+            <persistence type="property"/>
+            <modifiers read="true" write="true" search="true" optional="true"/>
+        </attribute>
+        <attribute qualifier="erpExportError" type="java.lang.String">
+            <description>Last error message received from ERP</description>
+            <persistence type="property"/>
+            <modifiers read="true" write="true" search="true" optional="true"/>
+        </attribute>
+        <attribute qualifier="erpIdempotencyKey" type="java.lang.String">
+            <description>Idempotency key sent to ERP</description>
+            <persistence type="property"/>
+            <modifiers read="true" write="true" search="true" optional="true"/>
+        </attribute>
+    </attributes>
+</itemtype>
+
+
+    <action id="takePayment" bean="takePaymentAction">
+        <transition name="OK" to="sendOrderToErp"/>
+        <transition name="NOK" to="sendPaymentFailedNotification"/>
+    </action>
+
+    <!-- SAP S/4HANA OData Order Replication Step -->
+    <action id="sendOrderToErp" bean="sendOrderToErpAction">
+        <transition name="OK" to="splitOrder"/>
+        <transition name="NOK" to="error"/>
+    </action>
+
+    <action id="splitOrder" bean="splitOrderAction">
+        <transition name="OK" to="waitForWarehouseSubprocessEnd"/>
+    </action>
+
+
+    <!-- Populator & Converter -->
+<bean id="sapODataOrderPopulator" class="org.training.core.erp.odata.converters.SapODataOrderPopulator"/>
+
+<bean id="sapODataOrderConverter" parent="abstractPopulatingConverter">
+    <property name="targetClass" value="org.training.core.erp.odata.dto.SapODataSalesOrderRequest"/>
+    <property name="populators">
+        <list>
+            <ref bean="sapODataOrderPopulator"/>
+        </list>
+    </property>
+</bean>
+
+<!-- Resilient Service -->
+<alias name="defaultSapODataErpOrderReplicationService" alias="erpOrderReplicationService"/>
+<bean id="defaultSapODataErpOrderReplicationService"
+      class="org.training.core.erp.service.impl.DefaultSapODataErpOrderReplicationService">
+    <constructor-arg ref="modelService"/>
+    <constructor-arg ref="enumerationService"/>
+    <constructor-arg ref="sapODataOrderConverter"/>
+</bean>
+
+
+<bean id="sendOrderToErpAction" class="org.training.fulfilmentprocess.actions.order.SendOrderToErpAction" parent="abstractAction">
+    <property name="erpOrderReplicationService" ref="erpOrderReplicationService"/>
+</bean>
+
+# SAP S/4HANA OData ERP Integration Properties (Configurable for Mock & Production)
+erp.odata.base.url=${env.ERP_ODATA_BASE_URL:http://localhost:8089/sap/opu/odata/sap/API_SALES_ORDER_SRV}
+erp.odata.username=${env.ERP_ODATA_USERNAME:SAP_COMMERCE_USER}
+erp.odata.password=${env.ERP_ODATA_PASSWORD:SecretPassword123}
+erp.odata.connect.timeout=5000
+erp.odata.read.timeout=10000
+erp.odata.retry.maxAttempts=3
+erp.odata.csrf.enabled=true
+erp.odata.orderType=OR
+erp.odata.salesOrg=1000
+erp.odata.distChannel=10
+erp.odata.division=00
