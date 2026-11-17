@@ -1,0 +1,1039 @@
+package org.training.core.erp.odata.dto;
+
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import com.fasterxml.jackson.annotation.JsonProperty;
+import java.io.Serializable;
+
+@JsonIgnoreProperties(ignoreUnknown = true)
+public class SapODataErrorResponse implements Serializable {
+
+    private static final long serialVersionUID = 1L;
+
+    @JsonProperty("error")
+    private ODataErrorDetails error;
+
+    public ODataErrorDetails getError() {
+        return error;
+    }
+
+    public void setError(ODataErrorDetails error) {
+        this.error = error;
+    }
+
+    @JsonIgnoreProperties(ignoreUnknown = true)
+    public static class ODataErrorDetails implements Serializable {
+        private static final long serialVersionUID = 1L;
+
+        @JsonProperty("code")
+        private String code;
+
+        @JsonProperty("message")
+        private ErrorMessage message;
+
+        public String getCode() {
+            return code;
+        }
+
+        public void setCode(String code) {
+            this.code = code;
+        }
+
+        public ErrorMessage getMessage() {
+            return message;
+        }
+
+        public void setMessage(ErrorMessage message) {
+            this.message = message;
+        }
+    }
+
+    @JsonIgnoreProperties(ignoreUnknown = true)
+    public static class ErrorMessage implements Serializable {
+        private static final long serialVersionUID = 1L;
+
+        @JsonProperty("lang")
+        private String lang;
+
+        @JsonProperty("value")
+        private String value;
+
+        public String getLang() {
+            return lang;
+        }
+
+        public void setLang(String lang) {
+            this.lang = lang;
+        }
+
+        public String getValue() {
+            return value;
+        }
+
+        public void setValue(String value) {
+            this.value = value;
+        }
+    }
+}
+
+
+package org.training.core.erp.odata.dto;
+
+import com.fasterxml.jackson.annotation.JsonInclude;
+import com.fasterxml.jackson.annotation.JsonProperty;
+import java.io.Serializable;
+import java.math.BigDecimal;
+
+@JsonInclude(JsonInclude.Include.NON_NULL)
+public class SapODataItemRequest implements Serializable {
+
+    private static final long serialVersionUID = 1L;
+
+    @JsonProperty("SalesOrderItem")
+    private String salesOrderItem;
+
+    @JsonProperty("Material")
+    private String material;
+
+    @JsonProperty("RequestedQuantity")
+    private BigDecimal requestedQuantity;
+
+    @JsonProperty("RequestedQuantityUnit")
+    private String requestedQuantityUnit = "EA";
+
+    @JsonProperty("NetAmount")
+    private BigDecimal netAmount;
+
+    @JsonProperty("TransactionCurrency")
+    private String transactionCurrency;
+
+    public String getSalesOrderItem() {
+        return salesOrderItem;
+    }
+
+    public void setSalesOrderItem(String salesOrderItem) {
+        this.salesOrderItem = salesOrderItem;
+    }
+
+    public String getMaterial() {
+        return material;
+    }
+
+    public void setMaterial(String material) {
+        this.material = material;
+    }
+
+    public BigDecimal getRequestedQuantity() {
+        return requestedQuantity;
+    }
+
+    public void setRequestedQuantity(BigDecimal requestedQuantity) {
+        this.requestedQuantity = requestedQuantity;
+    }
+
+    public String getRequestedQuantityUnit() {
+        return requestedQuantityUnit;
+    }
+
+    public void setRequestedQuantityUnit(String requestedQuantityUnit) {
+        this.requestedQuantityUnit = requestedQuantityUnit;
+    }
+
+    public BigDecimal getNetAmount() {
+        return netAmount;
+    }
+
+    public void setNetAmount(BigDecimal netAmount) {
+        this.netAmount = netAmount;
+    }
+
+    public String getTransactionCurrency() {
+        return transactionCurrency;
+    }
+
+    public void setTransactionCurrency(String transactionCurrency) {
+        this.transactionCurrency = transactionCurrency;
+    }
+}
+
+
+package org.training.core.erp.odata.dto;
+
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import com.fasterxml.jackson.annotation.JsonProperty;
+import java.io.Serializable;
+
+@JsonIgnoreProperties(ignoreUnknown = true)
+public class SapODataResponseWrapper<T> implements Serializable {
+
+    private static final long serialVersionUID = 1L;
+
+    @JsonProperty("d")
+    private T d;
+
+    public T getD() {
+        return d;
+    }
+
+    public void setD(T d) {
+        this.d = d;
+    }
+}
+
+
+package org.training.core.erp.odata.dto;
+
+import com.fasterxml.jackson.annotation.JsonInclude;
+import com.fasterxml.jackson.annotation.JsonProperty;
+import java.io.Serializable;
+import java.math.BigDecimal;
+import java.util.ArrayList;
+import java.util.List;
+
+@JsonInclude(JsonInclude.Include.NON_NULL)
+public class SapODataSalesOrderRequest implements Serializable {
+
+    private static final long serialVersionUID = 1L;
+
+    @JsonProperty("SalesOrderType")
+    private String salesOrderType = "OR";
+
+    @JsonProperty("SalesOrganization")
+    private String salesOrganization;
+
+    @JsonProperty("DistributionChannel")
+    private String distributionChannel;
+
+    @JsonProperty("OrganizationDivision")
+    private String organizationDivision;
+
+    @JsonProperty("SoldToParty")
+    private String soldToParty;
+
+    @JsonProperty("PurchaseOrderByCustomer")
+    private String purchaseOrderByCustomer;
+
+    @JsonProperty("TransactionCurrency")
+    private String transactionCurrency;
+
+    @JsonProperty("TotalNetAmount")
+    private BigDecimal totalNetAmount;
+
+    @JsonProperty("to_Item")
+    private List<SapODataItemRequest> toItem = new ArrayList<>();
+
+    public String getSalesOrderType() {
+        return salesOrderType;
+    }
+
+    public void setSalesOrderType(String salesOrderType) {
+        this.salesOrderType = salesOrderType;
+    }
+
+    public String getSalesOrganization() {
+        return salesOrganization;
+    }
+
+    public void setSalesOrganization(String salesOrganization) {
+        this.salesOrganization = salesOrganization;
+    }
+
+    public String getDistributionChannel() {
+        return distributionChannel;
+    }
+
+    public void setDistributionChannel(String distributionChannel) {
+        this.distributionChannel = distributionChannel;
+    }
+
+    public String getOrganizationDivision() {
+        return organizationDivision;
+    }
+
+    public void setOrganizationDivision(String organizationDivision) {
+        this.organizationDivision = organizationDivision;
+    }
+
+    public String getSoldToParty() {
+        return soldToParty;
+    }
+
+    public void setSoldToParty(String soldToParty) {
+        this.soldToParty = soldToParty;
+    }
+
+    public String getPurchaseOrderByCustomer() {
+        return purchaseOrderByCustomer;
+    }
+
+    public void setPurchaseOrderByCustomer(String purchaseOrderByCustomer) {
+        this.purchaseOrderByCustomer = purchaseOrderByCustomer;
+    }
+
+    public String getTransactionCurrency() {
+        return transactionCurrency;
+    }
+
+    public void setTransactionCurrency(String transactionCurrency) {
+        this.transactionCurrency = transactionCurrency;
+    }
+
+    public BigDecimal getTotalNetAmount() {
+        return totalNetAmount;
+    }
+
+    public void setTotalNetAmount(BigDecimal totalNetAmount) {
+        this.totalNetAmount = totalNetAmount;
+    }
+
+    public List<SapODataItemRequest> getToItem() {
+        return toItem;
+    }
+
+    public void setToItem(List<SapODataItemRequest> toItem) {
+        this.toItem = toItem;
+    }
+}
+
+
+package org.training.core.erp.odata.dto;
+
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import com.fasterxml.jackson.annotation.JsonProperty;
+import java.io.Serializable;
+import java.math.BigDecimal;
+
+@JsonIgnoreProperties(ignoreUnknown = true)
+public class SapODataSalesOrderResponse implements Serializable {
+
+    private static final long serialVersionUID = 1L;
+
+    @JsonProperty("SalesOrder")
+    private String salesOrder;
+
+    @JsonProperty("SalesOrderType")
+    private String salesOrderType;
+
+    @JsonProperty("PurchaseOrderByCustomer")
+    private String purchaseOrderByCustomer;
+
+    @JsonProperty("TotalNetAmount")
+    private BigDecimal totalNetAmount;
+
+    @JsonProperty("TransactionCurrency")
+    private String transactionCurrency;
+
+    @JsonProperty("OverallDeliveryStatus")
+    private String overallDeliveryStatus;
+
+    @JsonProperty("OverallSDProcessStatus")
+    private String overallSDProcessStatus;
+
+    public String getSalesOrder() {
+        return salesOrder;
+    }
+
+    public void setSalesOrder(String salesOrder) {
+        this.salesOrder = salesOrder;
+    }
+
+    public String getSalesOrderType() {
+        return salesOrderType;
+    }
+
+    public void setSalesOrderType(String salesOrderType) {
+        this.salesOrderType = salesOrderType;
+    }
+
+    public String getPurchaseOrderByCustomer() {
+        return purchaseOrderByCustomer;
+    }
+
+    public void setPurchaseOrderByCustomer(String purchaseOrderByCustomer) {
+        this.purchaseOrderByCustomer = purchaseOrderByCustomer;
+    }
+
+    public BigDecimal getTotalNetAmount() {
+        return totalNetAmount;
+    }
+
+    public void setTotalNetAmount(BigDecimal totalNetAmount) {
+        this.totalNetAmount = totalNetAmount;
+    }
+
+    public String getTransactionCurrency() {
+        return transactionCurrency;
+    }
+
+    public void setTransactionCurrency(String transactionCurrency) {
+        this.transactionCurrency = transactionCurrency;
+    }
+
+    public String getOverallDeliveryStatus() {
+        return overallDeliveryStatus;
+    }
+
+    public void setOverallDeliveryStatus(String overallDeliveryStatus) {
+        this.overallDeliveryStatus = overallDeliveryStatus;
+    }
+
+    public String getOverallSDProcessStatus() {
+        return overallSDProcessStatus;
+    }
+
+    public void setOverallSDProcessStatus(String overallSDProcessStatus) {
+        this.overallSDProcessStatus = overallSDProcessStatus;
+    }
+}
+
+
+package org.training.core.erp.service;
+
+import java.io.Serializable;
+
+public class ErpReplicationResult implements Serializable {
+
+    private static final long serialVersionUID = 1L;
+
+    public enum Status {
+        SUCCESS,
+        RETRY,
+        FATAL_ERROR
+    }
+
+    private final Status status;
+    private final String erpOrderCode;
+    private final String message;
+    private final int httpStatusCode;
+    private final String idempotencyKey;
+
+    public ErpReplicationResult(Status status, String erpOrderCode, String message, int httpStatusCode, String idempotencyKey) {
+        this.status = status;
+        this.erpOrderCode = erpOrderCode;
+        this.message = message;
+        this.httpStatusCode = httpStatusCode;
+        this.idempotencyKey = idempotencyKey;
+    }
+
+    public static ErpReplicationResult success(String erpOrderCode, String idempotencyKey) {
+        return new ErpReplicationResult(Status.SUCCESS, erpOrderCode, "Replicated successfully", 201, idempotencyKey);
+    }
+
+    public static ErpReplicationResult retry(String message, int httpStatusCode, String idempotencyKey) {
+        return new ErpReplicationResult(Status.RETRY, null, message, httpStatusCode, idempotencyKey);
+    }
+
+    public static ErpReplicationResult fatal(String message, int httpStatusCode, String idempotencyKey) {
+        return new ErpReplicationResult(Status.FATAL_ERROR, null, message, httpStatusCode, idempotencyKey);
+    }
+
+    public Status getStatus() {
+        return status;
+    }
+
+    public String getErpOrderCode() {
+        return erpOrderCode;
+    }
+
+    public String getMessage() {
+        return message;
+    }
+
+    public int getHttpStatusCode() {
+        return httpStatusCode;
+    }
+
+    public String getIdempotencyKey() {
+        return idempotencyKey;
+    }
+
+    public boolean isSuccess() {
+        return Status.SUCCESS.equals(status);
+    }
+
+    public boolean isRetryable() {
+        return Status.RETRY.equals(status);
+    }
+
+    @Override
+    public String toString() {
+        return "ErpReplicationResult{" +
+                "status=" + status +
+                ", erpOrderCode='" + erpOrderCode + '\'' +
+                ", message='" + message + '\'' +
+                ", httpStatusCode=" + httpStatusCode +
+                ", idempotencyKey='" + idempotencyKey + '\'' +
+                '}';
+    }
+}
+
+
+package org.training.core.erp.service;
+
+import de.hybris.platform.core.model.order.OrderModel;
+
+public interface ErpOrderReplicationService {
+
+    /**
+     * Replicates a placed Commerce order to the ERP system via SAP OData.
+     *
+     * @param order the Commerce OrderModel
+     * @return ErpReplicationResult holding the outcome, ERP Sales Order ID, and status
+     */
+    ErpReplicationResult replicateOrder(OrderModel order);
+}
+
+
+package org.training.core.erp.service.impl;
+
+import com.fasterxml.jackson.databind.ObjectMapper;
+import de.hybris.platform.core.model.order.OrderModel;
+import de.hybris.platform.enumeration.EnumerationService;
+import de.hybris.platform.servicelayer.dto.converter.Converter;
+import de.hybris.platform.servicelayer.model.ModelService;
+import de.hybris.platform.util.Config;
+import org.apache.commons.lang3.StringUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.http.*;
+import org.springframework.http.client.SimpleClientHttpRequestFactory;
+import org.springframework.web.client.HttpStatusCodeException;
+import org.springframework.web.client.ResourceAccessException;
+import org.springframework.web.client.RestTemplate;
+import org.training.core.erp.odata.dto.SapODataErrorResponse;
+import org.training.core.erp.odata.dto.SapODataResponseWrapper;
+import org.training.core.erp.odata.dto.SapODataSalesOrderRequest;
+import org.training.core.erp.odata.dto.SapODataSalesOrderResponse;
+import org.training.core.erp.service.ErpOrderReplicationService;
+import org.training.core.erp.service.ErpReplicationResult;
+
+import java.nio.charset.StandardCharsets;
+import java.util.*;
+
+public class DefaultSapODataErpOrderReplicationService implements ErpOrderReplicationService {
+
+    private static final Logger LOG = LoggerFactory.getLogger(DefaultSapODataErpOrderReplicationService.class);
+
+    private static final String PROP_BASE_URL = "erp.odata.base.url";
+    private static final String PROP_USERNAME = "erp.odata.username";
+    private static final String PROP_PASSWORD = "erp.odata.password";
+    private static final String PROP_CONNECT_TIMEOUT = "erp.odata.connect.timeout";
+    private static final String PROP_READ_TIMEOUT = "erp.odata.read.timeout";
+    private static final String PROP_MAX_ATTEMPTS = "erp.odata.retry.maxAttempts";
+    private static final String PROP_CSRF_ENABLED = "erp.odata.csrf.enabled";
+
+    private static final String DEFAULT_BASE_URL = "http://localhost:8089/sap/opu/odata/sap/API_SALES_ORDER_SRV";
+
+    private final ModelService modelService;
+    private final EnumerationService enumerationService;
+    private final Converter<OrderModel, SapODataSalesOrderRequest> erpOrderODataConverter;
+    private final ObjectMapper objectMapper = new ObjectMapper();
+
+    // In-memory cached CSRF token and session cookies
+    private String cachedCsrfToken;
+    private List<String> cachedSessionCookies = new ArrayList<>();
+
+    public DefaultSapODataErpOrderReplicationService(ModelService modelService,
+                                                     EnumerationService enumerationService,
+                                                     Converter<OrderModel, SapODataSalesOrderRequest> erpOrderODataConverter) {
+        this.modelService = modelService;
+        this.enumerationService = enumerationService;
+        this.erpOrderODataConverter = erpOrderODataConverter;
+    }
+
+    @Override
+    public ErpReplicationResult replicateOrder(OrderModel order) {
+        if (order == null) {
+            return ErpReplicationResult.fatal("Order is null", 400, null);
+        }
+
+        String orderCode = order.getCode();
+        LOG.info("Initiating ERP replication for order [{}]", orderCode);
+
+        // 1. Check or create Idempotency Key
+        String idempotencyKey = (String) getSafeOrderProperty(order, "erpIdempotencyKey");
+        if (StringUtils.isBlank(idempotencyKey)) {
+            idempotencyKey = "HYB-" + orderCode + "-" + UUID.randomUUID().toString().substring(0, 8);
+            setSafeOrderProperty(order, "erpIdempotencyKey", idempotencyKey);
+        }
+
+        // 2. Build OData Request Payload
+        SapODataSalesOrderRequest odataPayload = erpOrderODataConverter.convert(order);
+
+        // 3. Setup RestTemplate with timeouts
+        RestTemplate restTemplate = createResilientRestTemplate();
+
+        String baseUrl = Config.getString(PROP_BASE_URL, DEFAULT_BASE_URL);
+        int maxAttempts = Config.getInt(PROP_MAX_ATTEMPTS, 3);
+        boolean csrfEnabled = Config.getBoolean(PROP_CSRF_ENABLED, true);
+
+        // 4. CSRF Handshake if needed
+        if (csrfEnabled && cachedCsrfToken == null) {
+            fetchCsrfToken(restTemplate, baseUrl);
+        }
+
+        // 5. Execution Loop with Retries
+        ErpReplicationResult lastResult = null;
+        for (int attempt = 1; attempt <= maxAttempts; attempt++) {
+            try {
+                LOG.info("Replicating order [{}] to ERP (Attempt {}/{})", orderCode, attempt, maxAttempts);
+
+                HttpHeaders headers = createRequestHeaders(idempotencyKey, csrfEnabled);
+                HttpEntity<SapODataSalesOrderRequest> requestEntity = new HttpEntity<>(odataPayload, headers);
+
+                String postUrl = baseUrl.replaceAll("/+$", "") + "/A_SalesOrder";
+                ResponseEntity<String> response = restTemplate.exchange(
+                        postUrl,
+                        HttpMethod.POST,
+                        requestEntity,
+                        String.class
+                );
+
+                if (response.getStatusCode().is2xxSuccessful() && response.getBody() != null) {
+                    // Success!
+                    String responseBody = response.getBody();
+                    SapODataSalesOrderResponse erpSalesOrder = parseSalesOrderResponse(responseBody);
+                    String salesOrderNumber = erpSalesOrder != null ? erpSalesOrder.getSalesOrder() : null;
+
+                    updateOrderSuccess(order, salesOrderNumber, idempotencyKey);
+                    LOG.info("Successfully replicated order [{}] to ERP. Assigned SalesOrder: [{}]",
+                            orderCode, salesOrderNumber);
+
+                    return ErpReplicationResult.success(salesOrderNumber, idempotencyKey);
+                }
+
+            } catch (HttpStatusCodeException httpEx) {
+                HttpStatus status = HttpStatus.resolve(httpEx.getStatusCode().value());
+                String errorBody = httpEx.getResponseBodyAsString();
+                String parsedErrorMsg = extractErrorMessage(errorBody);
+
+                LOG.warn("ERP HTTP Error for order [{}]: Status [{}] Body: [{}]",
+                        orderCode, status, parsedErrorMsg);
+
+                // Handle CSRF expiration (403 Forbidden with CSRF error)
+                if (status == HttpStatus.FORBIDDEN && csrfEnabled && attempt < maxAttempts) {
+                    LOG.info("CSRF token expired. Refetching and retrying...");
+                    cachedCsrfToken = null;
+                    fetchCsrfToken(restTemplate, baseUrl);
+                    continue;
+                }
+
+                // If transient (502, 503, 504) -> retryable
+                if (status != null && (status == HttpStatus.SERVICE_UNAVAILABLE
+                        || status == HttpStatus.GATEWAY_TIMEOUT
+                        || status == HttpStatus.BAD_GATEWAY)) {
+
+                    lastResult = ErpReplicationResult.retry(
+                            "Transient ERP outage (" + status + "): " + parsedErrorMsg,
+                            status.value(), idempotencyKey);
+
+                    applyBackoff(attempt);
+                    continue;
+                }
+
+                // If client validation error (400, 422) -> Fatal rejection
+                updateOrderFailure(order, ErpReplicationResult.Status.FATAL_ERROR, parsedErrorMsg, idempotencyKey);
+                return ErpReplicationResult.fatal("ERP rejected order: " + parsedErrorMsg,
+                        httpEx.getStatusCode().value(), idempotencyKey);
+
+            } catch (ResourceAccessException ioEx) {
+                LOG.warn("Network / timeout exception connecting to ERP for order [{}]: {}",
+                        orderCode, ioEx.getMessage());
+
+                lastResult = ErpReplicationResult.retry("Network timeout: " + ioEx.getMessage(), 504, idempotencyKey);
+                applyBackoff(attempt);
+
+            } catch (Exception ex) {
+                LOG.error("Unexpected error during ERP order replication for order [{}]", orderCode, ex);
+                updateOrderFailure(order, ErpReplicationResult.Status.FATAL_ERROR, ex.getMessage(), idempotencyKey);
+                return ErpReplicationResult.fatal("Unexpected error: " + ex.getMessage(), 500, idempotencyKey);
+            }
+        }
+
+        // Exhausted retries
+        String retryMsg = lastResult != null ? lastResult.getMessage() : "Exhausted retry attempts connecting to ERP";
+        updateOrderFailure(order, ErpReplicationResult.Status.RETRY, retryMsg, idempotencyKey);
+        return ErpReplicationResult.retry(retryMsg, 503, idempotencyKey);
+    }
+
+    private void fetchCsrfToken(RestTemplate restTemplate, String baseUrl) {
+        try {
+            HttpHeaders headers = new HttpHeaders();
+            headers.set("x-csrf-token", "Fetch");
+            addBasicAuth(headers);
+
+            String fetchUrl = baseUrl.replaceAll("/+$", "") + "/";
+            HttpEntity<Void> request = new HttpEntity<>(headers);
+            ResponseEntity<String> response = restTemplate.exchange(fetchUrl, HttpMethod.GET, request, String.class);
+
+            List<String> csrfHeader = response.getHeaders().get("x-csrf-token");
+            if (csrfHeader != null && !csrfHeader.isEmpty()) {
+                this.cachedCsrfToken = csrfHeader.get(0);
+                LOG.info("Acquired fresh SAP CSRF token: {}", cachedCsrfToken);
+            }
+
+            List<String> setCookies = response.getHeaders().get(HttpHeaders.SET_COOKIE);
+            if (setCookies != null) {
+                this.cachedSessionCookies = setCookies;
+            }
+        } catch (Exception e) {
+            LOG.warn("Unable to fetch CSRF token from ERP: {}", e.getMessage());
+        }
+    }
+
+    private HttpHeaders createRequestHeaders(String idempotencyKey, boolean csrfEnabled) {
+        HttpHeaders headers = new HttpHeaders();
+        headers.setContentType(MediaType.APPLICATION_JSON);
+        headers.setAccept(Collections.singletonList(MediaType.APPLICATION_JSON));
+        headers.set("X-Idempotency-Key", idempotencyKey);
+        headers.set("X-Correlation-ID", UUID.randomUUID().toString());
+
+        addBasicAuth(headers);
+
+        if (csrfEnabled && cachedCsrfToken != null) {
+            headers.set("x-csrf-token", cachedCsrfToken);
+        }
+
+        if (cachedSessionCookies != null && !cachedSessionCookies.isEmpty()) {
+            headers.put(HttpHeaders.COOKIE, cachedSessionCookies);
+        }
+
+        return headers;
+    }
+
+    private void addBasicAuth(HttpHeaders headers) {
+        String user = Config.getString(PROP_USERNAME, "SAP_COMMERCE_USER");
+        String pass = Config.getString(PROP_PASSWORD, "SecretPassword123");
+        if (StringUtils.isNotBlank(user)) {
+            String auth = user + ":" + pass;
+            byte[] encodedAuth = Base64.getEncoder().encode(auth.getBytes(StandardCharsets.UTF_8));
+            headers.set(HttpHeaders.AUTHORIZATION, "Basic " + new String(encodedAuth));
+        }
+    }
+
+    private RestTemplate createResilientRestTemplate() {
+        int connectTimeout = Config.getInt(PROP_CONNECT_TIMEOUT, 5000);
+        int readTimeout = Config.getInt(PROP_READ_TIMEOUT, 10000);
+
+        SimpleClientHttpRequestFactory factory = new SimpleClientHttpRequestFactory();
+        factory.setConnectTimeout(connectTimeout);
+        factory.setReadTimeout(readTimeout);
+
+        return new RestTemplate(factory);
+    }
+
+    private void applyBackoff(int attempt) {
+        long backoffMs = (long) Math.pow(2, attempt) * 500L;
+        try {
+            Thread.sleep(backoffMs);
+        } catch (InterruptedException e) {
+            Thread.currentThread().interrupt();
+        }
+    }
+
+    private SapODataSalesOrderResponse parseSalesOrderResponse(String responseJson) {
+        try {
+            SapODataResponseWrapper<SapODataSalesOrderResponse> wrapper = objectMapper.readValue(
+                    responseJson,
+                    objectMapper.getTypeFactory().constructParametricType(SapODataResponseWrapper.class, SapODataSalesOrderResponse.class)
+            );
+            return wrapper != null ? wrapper.getD() : null;
+        } catch (Exception e) {
+            LOG.warn("Could not deserialize OData response JSON: {}", e.getMessage());
+            return null;
+        }
+    }
+
+    private String extractErrorMessage(String errorJson) {
+        if (StringUtils.isBlank(errorJson)) {
+            return "No error details returned";
+        }
+        try {
+            SapODataErrorResponse errorResponse = objectMapper.readValue(errorJson, SapODataErrorResponse.class);
+            if (errorResponse != null && errorResponse.getError() != null && errorResponse.getError().getMessage() != null) {
+                return errorResponse.getError().getMessage().getValue();
+            }
+        } catch (Exception ignored) {
+        }
+        return errorJson;
+    }
+
+    private void updateOrderSuccess(OrderModel order, String salesOrderNumber, String idempotencyKey) {
+        setSafeOrderProperty(order, "erpOrderCode", salesOrderNumber);
+        setSafeOrderProperty(order, "erpExportDate", new Date());
+        setSafeOrderProperty(order, "erpExportError", null);
+        setSafeOrderProperty(order, "erpIdempotencyKey", idempotencyKey);
+        setSafeEnumProperty(order, "erpExportStatus", "EXPORTED");
+        modelService.save(order);
+    }
+
+    private void updateOrderFailure(OrderModel order, ErpReplicationResult.Status status, String errorMessage, String idempotencyKey) {
+        setSafeOrderProperty(order, "erpExportError", errorMessage);
+        setSafeOrderProperty(order, "erpIdempotencyKey", idempotencyKey);
+        String enumVal = status == ErpReplicationResult.Status.RETRY ? "RETRY" : "FAILED";
+        setSafeEnumProperty(order, "erpExportStatus", enumVal);
+        modelService.save(order);
+    }
+
+    private Object getSafeOrderProperty(OrderModel order, String attribute) {
+        try {
+            return modelService.getAttributeValue(order, attribute);
+        } catch (Exception e) {
+            return null;
+        }
+    }
+
+    private void setSafeOrderProperty(OrderModel order, String attribute, Object value) {
+        try {
+            modelService.setAttributeValue(order, attribute, value);
+        } catch (Exception e) {
+            LOG.debug("Attribute {} not yet generated or available on OrderModel", attribute);
+        }
+    }
+
+    private void setSafeEnumProperty(OrderModel order, String attribute, String enumCode) {
+        try {
+            Object enumValue = enumerationService.getEnumerationValue("ErpExportStatus", enumCode);
+            modelService.setAttributeValue(order, attribute, enumValue);
+        } catch (Exception e) {
+            LOG.debug("Enum value ErpExportStatus.{} could not be assigned: {}", enumCode, e.getMessage());
+        }
+    }
+}
+
+
+<itemtype code="Order" autocreate="false" generate="false">
+                <attributes>
+                    <attribute qualifier="erpOrderCode" type="java.lang.String">
+                        <persistence type="property"/>
+                        <modifiers read="true" write="true" search="true" optional="true"/>
+                    </attribute>
+                    <attribute qualifier="erpExportStatus" type="ErpExportStatus">
+                        <persistence type="property"/>
+                        <modifiers read="true" write="true" search="true" optional="true"/>
+                    </attribute>
+                    <attribute qualifier="erpExportDate" type="java.util.Date">
+                        <persistence type="property"/>
+                        <modifiers read="true" write="true" search="true" optional="true"/>
+                    </attribute>
+                    <attribute qualifier="erpExortError" type="java.lang.String">
+                        <persistence type="property"/>
+                        <modifiers read="true" write="true" search="true" optional="true"/>
+                    </attribute>
+                    <attribute qualifier="erpIdempotencyKey" type="java.lang.String">
+                        <persistence type="property"/>
+                        <modifiers read="true" write="true" search="true" optional="true"/>
+                    </attribute>
+
+                </attributes>
+            </itemtype>
+<enumtype code="ErpExportStatus" generate="true" autocreate="true" dynamic="true">
+            <value code="NOT_EXPORTED"/>
+            <value code="EXPORTED"/>
+            <value code="FAILED"/>
+            <value code="RETRY"/>
+        </enumtype>
+
+	<!-- Populator & Converter -->
+	<bean id="sapODataOrderPopulator" class="org.training.core.erp.odata.converters.SapODataOrderPopulator"/>
+
+	<bean id="sapODataOrderConverter" parent="abstractPopulatingConverter">
+		<property name="targetClass" value="org.training.core.erp.odata.dto.SapODataSalesOrderRequest"/>
+		<property name="populators">
+			<list>
+				<ref bean="sapODataOrderPopulator"/>
+			</list>
+		</property>
+	</bean>
+
+	<!-- Resilient Service -->
+	<alias name="defaultSapODataErpOrderReplicationService" alias="erpOrderReplicationService"/>
+	<bean id="defaultSapODataErpOrderReplicationService"
+		  class="org.training.core.erp.service.impl.DefaultSapODataErpOrderReplicationService">
+		<constructor-arg ref="modelService"/>
+		<constructor-arg ref="enumerationService"/>
+		<constructor-arg ref="sapODataOrderConverter"/>
+	</bean>
+
+/*
+ * Copyright (c) 2026 SAP SE or an SAP affiliate company. All rights reserved.
+ */
+package org.training.fulfilmentprocess.actions.order;
+
+import de.hybris.platform.core.model.order.OrderModel;
+import de.hybris.platform.orderprocessing.model.OrderProcessModel;
+import de.hybris.platform.processengine.action.AbstractSimpleDecisionAction;
+import org.apache.log4j.Logger;
+//import org.springframework.beans.factory.annotation.Required;
+import org.training.core.erp.service.ErpOrderReplicationService;
+import org.training.core.erp.service.ErpReplicationResult;
+
+/**
+ * Production-ready fulfillment process action to replicate Commerce orders to SAP S/4HANA ERP via OData.
+ */
+public class SendOrderToErpAction extends AbstractSimpleDecisionAction<OrderProcessModel> {
+
+    private static final Logger LOG = Logger.getLogger(SendOrderToErpAction.class);
+
+    private ErpOrderReplicationService erpOrderReplicationService;
+
+    @Override
+    public Transition executeAction(final OrderProcessModel process) {
+        final OrderModel order = process.getOrder();
+
+        if (order == null) {
+            LOG.error("Missing order in OrderProcessModel, terminating ERP replication action.");
+            return Transition.NOK;
+        }
+
+        LOG.info(String.format("Starting ERP replication action for order [%s]", order.getCode()));
+
+        try {
+            final ErpReplicationResult result = getErpOrderReplicationService().replicateOrder(order);
+
+            if (result != null && result.isSuccess()) {
+                LOG.info(String.format("Order [%s] successfully replicated to SAP S/4HANA with ERP Sales Document ID [%s]",
+                        order.getCode(), result.getErpOrderCode()));
+                return Transition.OK;
+            } else {
+                final String failureReason = result != null ? result.getMessage() : "Unknown ERP replication error";
+                LOG.warn(String.format("Order [%s] ERP replication was not successful: %s", order.getCode(), failureReason));
+                return Transition.NOK;
+            }
+        } catch (final Exception ex) {
+            LOG.error(String.format("Unhandled exception during ERP order replication for order [%s]", order.getCode()), ex);
+            return Transition.NOK;
+        }
+    }
+
+    protected ErpOrderReplicationService getErpOrderReplicationService() {
+        return erpOrderReplicationService;
+    }
+
+//    @Required
+    public void setErpOrderReplicationService(final ErpOrderReplicationService erpOrderReplicationService) {
+        this.erpOrderReplicationService = erpOrderReplicationService;
+    }
+}
+
+<bean id="sendOrderToErpAction" class="org.training.fulfilmentprocess.actions.order.SendOrderToErpAction" parent="abstractAction">
+		<property name="erpOrderReplicationService" ref="erpOrderReplicationService"/>
+	</bean>
+
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+ Copyright (c) 2019 SAP SE or an SAP affiliate company. All rights reserved.
+-->
+<process xmlns="http://www.hybris.de/xsd/processdefinition" start="checkOrder" name="order-process" processClass="de.hybris.platform.orderprocessing.model.OrderProcessModel">
+
+	<action id="checkOrder" bean="checkOrderAction">
+		<transition name="OK" to="checkAuthorizeOrderPayment"/>
+		<transition name="NOK" to="error"/>
+	</action>
+
+	<action id="checkAuthorizeOrderPayment" bean="checkAuthorizeOrderPaymentAction">
+		<transition name="OK" to="reserveAmount"/>
+		<transition name="NOK" to="authorizationFailedNotification"/>
+	</action>
+
+	<action id="reserveAmount" bean="reserveOrderAmountAction">
+		<transition name="OK" to="checkTransactionReviewStatus"/>
+		<transition name="NOK" to="sendPaymentFailedNotification"/>
+	</action>
+
+	<action id="checkTransactionReviewStatus" bean="checkTransactionReviewStatusAction">
+		<transition name="OK" to="fraudCheck"/>
+		<transition name="NOK" to="notifyCustomer"/>
+		<transition name="WAIT" to="waitForReviewDecision"/>
+	</action>
+
+	<wait id="waitForReviewDecision" then="checkTransactionReviewStatus" prependProcessCode="false">
+  		<event>${process.order.code}_ReviewDecision</event>
+	</wait>
+
+	<action id="fraudCheck" bean="fraudCheckOrderInternalAction">
+		<transition name="OK" to="sendOrderPlacedNotification"/>
+		<transition name="POTENTIAL" to="manualOrderCheckCSA" />
+		<transition name="FRAUD" to="notifyCustomer" />
+	</action>
+	
+	<action id="manualOrderCheckCSA" bean="prepareOrderForManualCheckAction">
+		<transition name="OK" to="waitForManualOrderCheckCSA"/>
+	</action>
+
+	<wait id="waitForManualOrderCheckCSA" then="orderManualChecked" prependProcessCode="false" >
+		<event>${process.code}_CSAOrderVerified</event>
+	</wait>
+	
+	<action id="orderManualChecked" bean="orderManualCheckedAction">
+		<transition name="OK" to="sendOrderPlacedNotification"/>
+		<transition name="NOK" to="waitForCleanUp"/>
+		<transition name="UNDEFINED" to="waitForManualOrderCheckCSA"/>
+	</action>
+	
+	<action id="notifyCustomer" bean="notifyCustomerAboutFraudAction">
+		<transition name="OK" to="waitForCleanUp"/>
+	</action>
+	
+	<wait id="waitForCleanUp" then="scheduleForCleanUp" prependProcessCode="false">
+		<event>${process.code}_CleanUpEvent</event>
+	</wait>
+	
+	<action id="scheduleForCleanUp" bean="scheduleForCleanUpAction">
+		<transition name="OK" to="cancelOrder"/>
+		<transition name="NOK" to="orderManualChecked" /> 
+	</action>
+
+	<action id="sendOrderPlacedNotification" bean="sendOrderPlacedNotificationAction">
+		<transition name="OK" to="takePayment"/>
+	</action>
+	
+	<action id="takePayment" bean="takePaymentAction">
+		<transition name="OK" to="sendOrderToErp"/>
+		<transition name="NOK" to="sendPaymentFailedNotification"/>
+	</action>
+
+	<!-- SAP S/4Hana Odata Order Replication step-->
+	<action id="sendOrderToErp" bean="sendOrderToErpAction">
+		<transition name="OK" to="splitOrder"/>
+		<transition name="NOK" to="error"/>
+	</action>
+
+	<action id="cancelOrder" bean="cancelWholeOrderAuthorizationAction">
+		<transition name="OK" to="failed"/>
+	</action>
+
+	<action id="authorizationFailedNotification" bean="sendAuthorizationFailedNotificationAction">
+		<transition name="OK" to="failed"/>
+	</action>
+
+	<action id="sendPaymentFailedNotification" bean="sendPaymentFailedNotificationAction">
+		<transition name="OK" to="failed"/>
+	</action>
+
+	<action id="splitOrder" bean="splitOrderAction">
+		<transition name="OK" to="waitForWarehouseSubprocessEnd"/>
+	</action>
+
+	<wait id="waitForWarehouseSubprocessEnd" then="isProcessCompleted" prependProcessCode="false" >
+		<event>${process.code}_ConsignmentSubprocessEnd</event>
+	</wait>
+
+	<action id="isProcessCompleted" bean="subprocessesCompletedAction">
+		<transition name="OK" to="setOrderExpirationTime"/>
+		<transition name="NOK" to="waitForWarehouseSubprocessEnd"/>
+	</action>
+	
+	<action id="setOrderExpirationTime" bean="setOrderExpirationTimeAction">
+		<transition name="OK" to="sendOrderCompletedNotification"/>
+		<transition name="NOK" to="error"/>
+	</action>
+
+	<action id="sendOrderCompletedNotification" bean="sendOrderCompletedNotificationAction">
+		<transition name="OK" to="success"/>
+	</action>
+
+	<end id="error" state="ERROR">All went wrong.</end>
+	<end id="failed" state="FAILED">Order not placed.</end>
+	<end id="success" state="SUCCEEDED">Order placed.</end>
+
+</process>
